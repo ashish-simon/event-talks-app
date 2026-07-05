@@ -1060,3 +1060,127 @@ body.drawer-open .tweet-drawer {
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.1);
 }
 
+/* ==========================================================================
+   Light Mode Theme Overrides
+   ========================================================================== */
+body.light-theme {
+    --bg-base: #f1f5f9;
+    --bg-surface: rgba(255, 255, 255, 0.7);
+    --bg-surface-hover: rgba(255, 255, 255, 0.95);
+    --bg-card: rgba(255, 255, 255, 0.8);
+    --bg-card-hover: rgba(255, 255, 255, 0.95);
+    
+    --border-color: rgba(15, 23, 42, 0.08);
+    --border-color-hover: rgba(59, 130, 246, 0.35);
+    
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --text-link: #2563eb;
+    --text-link-hover: #1d4ed8;
+    
+    --color-primary: #2563eb;
+    
+    /* Background adjustments for light cards */
+    --color-feature-bg: rgba(16, 185, 129, 0.1);
+    --color-change-bg: rgba(245, 158, 11, 0.1);
+    --color-announcement-bg: rgba(59, 130, 246, 0.1);
+    --color-issue-bg: rgba(239, 68, 68, 0.1);
+    --color-breaking-bg: rgba(236, 72, 153, 0.1);
+}
+
+/* Specific Light Theme Component Adjustments */
+body.light-theme .glow-sphere {
+    opacity: 0.12;
+}
+
+body.light-theme #search-input {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+body.light-theme #search-input:focus {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+body.light-theme .tweet-drawer {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .selected-note-card {
+    background: rgba(15, 23, 42, 0.03);
+}
+
+body.light-theme .note-card:hover {
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+}
+
+body.light-theme .btn-copy-card {
+    background: rgba(15, 23, 42, 0.03);
+    border-color: rgba(15, 23, 42, 0.08);
+}
+
+body.light-theme .btn-copy-card:hover {
+    background: rgba(16, 185, 129, 0.06);
+    border-color: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+body.light-theme .btn-copy-card.copied {
+    background: rgba(16, 185, 129, 0.12) !important;
+    border-color: rgba(16, 185, 129, 0.3) !important;
+    color: #10b981 !important;
+}
+
+body.light-theme .filter-pill:hover {
+    background: rgba(15, 23, 42, 0.05);
+}
+
+body.light-theme .filter-pill.active {
+    background: rgba(59, 130, 246, 0.08);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #2563eb;
+}
+
+/* ==========================================================================
+   Theme Toggle Button Styling
+   ========================================================================== */
+.theme-toggle-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-normal);
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    transform: scale(1.05);
+}
+
+body.light-theme .theme-toggle-btn:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+/* Toggle Sun/Moon display depending on active theme class */
+body.light-theme .theme-toggle-btn .sun-icon {
+    display: none;
+}
+body.light-theme .theme-toggle-btn .moon-icon {
+    display: block !important;
+}
+body:not(.light-theme) .theme-toggle-btn .sun-icon {
+    display: block !important;
+}
+body:not(.light-theme) .theme-toggle-btn .moon-icon {
+    display: none;
+}
+
+

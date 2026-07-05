@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // UI Elements
     const btnRefresh = document.getElementById('btn-refresh');
     const btnExportCsv = document.getElementById('btn-export-csv');
+    const themeToggle = document.getElementById('theme-toggle');
     const statusBadge = document.getElementById('status-badge');
     const statusText = document.getElementById('status-text');
     const searchInput = document.getElementById('search-input');
@@ -40,10 +41,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const countBreaking = document.getElementById('count-breaking');
 
     // Init
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme === 'light') {
+        document.body.classList.add('light-theme');
+    }
     fetchNotes(false);
 
     // Event Listeners
     btnRefresh.addEventListener('click', () => fetchNotes(true));
+    
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const theme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+        localStorage.setItem('theme', theme);
+    });
     
     searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value.toLowerCase().trim();
