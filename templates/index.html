@@ -134,6 +134,9 @@
                 <div class="empty-icon">📂</div>
                 <h3>No release notes found</h3>
                 <p>Try adjusting your search query or filters.</p>
+                <button id="btn-clear-filters" class="btn btn-primary" style="margin-top: 1.25rem;">
+                    Clear Search & Filters
+                </button>
             </div>
 
             <!-- Release Notes Grid -->
@@ -210,9 +213,11 @@
                 <p class="share-notice">
                     This opens X/Twitter web intent in a new tab where you can review, log in (if needed), and post.
                 </p>
-            </div>
         </aside>
     </div>
+
+    <!-- Backdrop for Drawer on Mobile -->
+    <div id="drawer-backdrop" class="drawer-backdrop" aria-hidden="true"></div>
 
     <!-- JS -->
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>

@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const notesGrid = document.getElementById('notes-grid');
     const loadingState = document.getElementById('loading-state');
     const emptyState = document.getElementById('empty-state');
+    const btnClearFilters = document.getElementById('btn-clear-filters');
+    const drawerBackdrop = document.getElementById('drawer-backdrop');
     
     // Drawer Elements
     const tweetDrawer = document.getElementById('tweet-drawer');
@@ -107,6 +109,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnPostTwitter.addEventListener('click', shareOnTwitter);
     btnExportCsv.addEventListener('click', exportToCSV);
+    drawerBackdrop.addEventListener('click', closeDrawer);
+
+    btnClearFilters.addEventListener('click', () => {
+        // Reset search state
+        searchInput.value = '';
+        searchQuery = '';
+        clearSearchBtn.style.display = 'none';
+
+        // Reset filter pills to All
+        filterPills.forEach(p => {
+            if (p.getAttribute('data-type') === 'all') {
+                p.classList.add('active');
+                p.setAttribute('aria-checked', 'true');
+            } else {
+                p.classList.remove('active');
+                p.setAttribute('aria-checked', 'false');
+            }
+        });
+        currentFilter = 'all';
+
+        // Re-render
+        filterAndRender();
+    });
 
     // Fetch notes from API
     async function fetchNotes(forceRefresh = false) {

@@ -1183,4 +1183,29 @@ body:not(.light-theme) .theme-toggle-btn .moon-icon {
     display: none;
 }
 
+/* Drawer Backdrop Overlay styling */
+.drawer-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(6, 9, 19, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 99;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-normal);
+}
+
+body.drawer-open .drawer-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+body.light-theme .drawer-backdrop {
+    background: rgba(15, 23, 42, 0.3);
+}
+
+
 
