@@ -1,0 +1,1036 @@
+/* ==========================================================================
+   Design System & Variables
+   ========================================================================== */
+:root {
+    /* Color Palette */
+    --bg-base: #060913;
+    --bg-surface: rgba(13, 20, 38, 0.6);
+    --bg-surface-hover: rgba(20, 30, 58, 0.85);
+    --bg-card: rgba(22, 30, 52, 0.55);
+    --bg-card-hover: rgba(28, 38, 66, 0.75);
+    
+    --border-color: rgba(255, 255, 255, 0.07);
+    --border-color-hover: rgba(66, 133, 244, 0.25);
+    
+    /* Brand & Accents */
+    --color-primary: #3b82f6;
+    --color-primary-rgb: 59, 130, 246;
+    --color-secondary: #8b5cf6;
+    --gradient-brand: linear-gradient(135deg, #4285f4 0%, #8b5cf6 50%, #d946ef 100%);
+    --gradient-button: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    
+    /* Note Status Colors */
+    --color-feature: #10b981;
+    --color-feature-bg: rgba(16, 185, 129, 0.15);
+    --color-feature-border: rgba(16, 185, 129, 0.3);
+    
+    --color-change: #f59e0b;
+    --color-change-bg: rgba(245, 158, 11, 0.15);
+    --color-change-border: rgba(245, 158, 11, 0.3);
+    
+    --color-announcement: #3b82f6;
+    --color-announcement-bg: rgba(59, 130, 246, 0.15);
+    --color-announcement-border: rgba(59, 130, 246, 0.3);
+    
+    --color-issue: #ef4444;
+    --color-issue-bg: rgba(239, 68, 68, 0.15);
+    --color-issue-border: rgba(239, 68, 68, 0.3);
+    
+    --color-breaking: #ec4899;
+    --color-breaking-bg: rgba(236, 72, 153, 0.15);
+    --color-breaking-border: rgba(236, 72, 153, 0.3);
+    
+    --color-fallback: #6b7280;
+    --color-fallback-bg: rgba(107, 114, 128, 0.15);
+    --color-fallback-border: rgba(107, 114, 128, 0.3);
+
+    /* Text Colors */
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #64748b;
+    --text-link: #38bdf8;
+    --text-link-hover: #7dd3fc;
+    
+    /* Layout & Styling details */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+    
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 15px rgba(59, 130, 246, 0.2);
+    
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.25s ease;
+    --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   Base Elements & Layout
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-secondary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Ambient glow spheres in the background */
+.glow-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.glow-sphere {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(140px);
+    opacity: 0.22;
+}
+
+.glow-blue {
+    top: -10%;
+    right: 15%;
+    width: 50vw;
+    height: 50vw;
+    background: radial-gradient(circle, rgba(66, 133, 244, 0.4) 0%, rgba(0,0,0,0) 70%);
+}
+
+.glow-purple {
+    bottom: -10%;
+    left: 10%;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.35) 0%, rgba(0,0,0,0) 75%);
+}
+
+/* App Main Container Grid */
+.app-container {
+    display: flex;
+    width: 100vw;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Main content panel (scrollable) */
+.main-panel {
+    flex: 1;
+    padding: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    transition: margin-right var(--transition-slow);
+}
+
+/* Add padding to main panel when drawer is visible on large screens */
+body.drawer-open .main-panel {
+    margin-right: 420px;
+}
+
+/* ==========================================================================
+   Header Component
+   ========================================================================== */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(66, 133, 244, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+    border: 1px solid rgba(66, 133, 244, 0.3);
+    color: #4285f4;
+    box-shadow: 0 0 20px rgba(66, 133, 244, 0.15);
+    animation: pulseGlow 3s infinite alternate;
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 10px rgba(66, 133, 244, 0.1); border-color: rgba(66, 133, 244, 0.2); }
+    100% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.3); border-color: rgba(139, 92, 246, 0.5); }
+}
+
+.logo-text h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-text h1 span {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.tagline {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+/* API Status Indicator Badge */
+.status-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid var(--border-color);
+    background: rgba(13, 20, 38, 0.4);
+    backdrop-filter: blur(4px);
+    transition: all var(--transition-normal);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-live {
+    border-color: rgba(16, 185, 129, 0.25);
+    color: #10b981;
+}
+.status-live .status-dot {
+    background-color: #10b981;
+    box-shadow: 0 0 8px #10b981;
+}
+
+.status-cache {
+    border-color: rgba(245, 158, 11, 0.25);
+    color: #f59e0b;
+}
+.status-cache .status-dot {
+    background-color: #f59e0b;
+    box-shadow: 0 0 8px #f59e0b;
+}
+
+.status-loading {
+    border-color: rgba(59, 130, 246, 0.25);
+    color: #3b82f6;
+}
+.status-loading .status-dot {
+    background-color: #3b82f6;
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.85); opacity: 0.5; }
+    100% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 8px #3b82f6;}
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.25rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    user-select: none;
+}
+
+.btn-refresh {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+
+.btn-refresh:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-refresh:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-refresh:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: var(--gradient-button);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+}
+
+.btn-primary:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5), var(--shadow-glow);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* Icon rotation for refresh */
+.icon-refresh {
+    transition: transform 0.6s ease-in-out;
+}
+
+.btn-refresh.spinning .icon-refresh {
+    animation: rotate 1s infinite linear;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Controls Section (Search & Filters)
+   ========================================================================== */
+.controls-section {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    backdrop-filter: blur(16px);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Search Box styling */
+.search-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1.25rem;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: color var(--transition-fast);
+}
+
+#search-input {
+    width: 100%;
+    padding: 0.9rem 3rem 0.9rem 3.25rem;
+    background: rgba(10, 15, 30, 0.6);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    outline: none;
+    transition: all var(--transition-normal);
+}
+
+#search-input:focus {
+    border-color: var(--color-primary);
+    background: rgba(10, 15, 30, 0.85);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+#search-input::placeholder {
+    color: var(--text-muted);
+}
+
+#search-input:focus + .search-icon {
+    color: var(--color-primary);
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    transition: color var(--transition-fast);
+}
+
+.clear-search-btn:hover {
+    color: var(--text-primary);
+}
+
+/* Filters Component */
+.filters-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-pill {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.filter-pill:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.filter-pill.active {
+    background: rgba(59, 130, 246, 0.12);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: var(--text-primary);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.1);
+}
+
+.pill-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.1rem 0.45rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filter-pill.active .pill-count {
+    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.25);
+    border-color: rgba(59, 130, 246, 0.1);
+}
+
+/* ==========================================================================
+   Release Note Card Styles
+   ========================================================================== */
+.notes-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.note-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    backdrop-filter: blur(12px);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Left accent vertical line on the card based on note type */
+.note-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--color-fallback);
+    transition: width var(--transition-fast);
+}
+
+.note-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-color-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.note-card:hover::before {
+    width: 6px;
+}
+
+/* Apply specific colors based on update type classes */
+.note-card.type-feature::before { background: var(--color-feature); }
+.note-card.type-change::before { background: var(--color-change); }
+.note-card.type-announcement::before { background: var(--color-announcement); }
+.note-card.type-issue::before { background: var(--color-issue); }
+.note-card.type-breaking::before { background: var(--color-breaking); }
+
+/* Selected state (being drafted in X Composer) */
+.note-card.selected-for-tweet {
+    border-color: rgba(139, 92, 246, 0.5);
+    background: rgba(22, 28, 52, 0.75);
+    box-shadow: 0 0 25px rgba(139, 92, 246, 0.18), var(--shadow-sm);
+}
+
+.note-card.selected-for-tweet::after {
+    content: '✏️ Selected for tweet';
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+    background: rgba(139, 92, 246, 0.12);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-sm);
+}
+
+/* Card Header elements */
+.note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.note-meta-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Badges for types */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+}
+
+.badge-feature {
+    background: var(--color-feature-bg);
+    border-color: var(--color-feature-border);
+    color: var(--color-feature);
+}
+
+.badge-change {
+    background: var(--color-change-bg);
+    border-color: var(--color-change-border);
+    color: var(--color-change);
+}
+
+.badge-announcement {
+    background: var(--color-announcement-bg);
+    border-color: var(--color-announcement-border);
+    color: var(--color-announcement);
+}
+
+.badge-issue {
+    background: var(--color-issue-bg);
+    border-color: var(--color-issue-border);
+    color: var(--color-issue);
+}
+
+.badge-breaking {
+    background: var(--color-breaking-bg);
+    border-color: var(--color-breaking-border);
+    color: var(--color-breaking);
+}
+
+.badge-fallback {
+    background: var(--color-fallback-bg);
+    border-color: var(--color-fallback-border);
+    color: var(--color-fallback);
+}
+
+.note-date {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.note-date svg {
+    color: var(--text-muted);
+}
+
+/* Card Content styling (Rich Text XML rendering) */
+.note-body {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.note-body p {
+    margin-bottom: 0.85rem;
+}
+
+.note-body p:last-child {
+    margin-bottom: 0;
+}
+
+.note-body a {
+    color: var(--text-link);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+    transition: all var(--transition-fast);
+}
+
+.note-body a:hover {
+    color: var(--text-link-hover);
+    border-bottom-color: var(--text-link-hover);
+}
+
+.note-body code {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.85em;
+    color: #e2e8f0;
+}
+
+.note-body ul, .note-body ol {
+    margin-left: 1.5rem;
+    margin-bottom: 0.85rem;
+}
+
+.note-body li {
+    margin-bottom: 0.35rem;
+}
+
+/* Card Actions (Tweet, View Original) */
+.note-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.btn-tweet {
+    background: rgba(139, 92, 246, 0.08);
+    border-color: rgba(139, 92, 246, 0.2);
+    color: #a78bfa;
+}
+
+.btn-tweet:hover {
+    background: rgba(139, 92, 246, 0.18);
+    border-color: rgba(139, 92, 246, 0.35);
+    color: #c084fc;
+    transform: translateY(-1.5px);
+}
+
+.btn-tweet svg {
+    transition: transform var(--transition-normal);
+}
+
+.btn-tweet:hover svg {
+    transform: rotate(8deg) scale(1.05);
+}
+
+.card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.card-link:hover {
+    color: var(--text-primary);
+}
+
+/* ==========================================================================
+   States (Loading, Empty)
+   ========================================================================== */
+.loading-state, .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 2rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    backdrop-filter: blur(16px);
+}
+
+.spinner-large {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(59, 130, 246, 0.15);
+    border-radius: 50%;
+    border-top-color: var(--color-primary);
+    animation: rotate 0.8s infinite linear;
+    margin-bottom: 1.5rem;
+}
+
+.loading-state p {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   Tweet Drawer (Composer Side Panel)
+   ========================================================================== */
+.tweet-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 420px;
+    background: rgba(10, 15, 30, 0.75);
+    border-left: 1px solid var(--border-color);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(24px);
+    z-index: 100;
+    transform: translateX(100%);
+    transition: transform var(--transition-slow);
+    display: flex;
+    flex-direction: column;
+}
+
+body.drawer-open .tweet-drawer {
+    transform: translateX(0);
+}
+
+.drawer-header {
+    padding: 1.5rem 1.75rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.drawer-title-group h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.35rem;
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.drawer-subtitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    transition: color var(--transition-fast);
+}
+
+.btn-close:hover {
+    color: var(--text-primary);
+}
+
+.drawer-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.section-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+/* Note Preview inside Drawer */
+.selected-note-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.15rem;
+}
+
+.selected-note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.selected-note-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.selected-note-body {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    max-height: 100px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+/* Style presets */
+.style-presets {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.preset-pill {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+}
+
+.preset-pill:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.preset-pill.active {
+    background: rgba(139, 92, 246, 0.12);
+    border-color: rgba(139, 92, 246, 0.35);
+    color: var(--text-primary);
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.1);
+}
+
+/* Textarea & Edit Area */
+.tweet-textarea-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+#tweet-textarea {
+    width: 100%;
+    height: 160px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    padding: 1rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    resize: none;
+    outline: none;
+    transition: all var(--transition-normal);
+}
+
+#tweet-textarea:focus {
+    border-color: var(--color-secondary);
+    background: rgba(0, 0, 0, 0.35);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+.tweet-textarea-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.btn-text-link {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color var(--transition-fast);
+}
+
+.btn-text-link:hover {
+    color: var(--text-secondary);
+}
+
+.char-counter {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.char-counter.warning {
+    color: var(--color-change);
+}
+
+.char-counter.danger {
+    color: var(--color-issue);
+    animation: shake 0.2s ease-in-out 2;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+}
+
+.btn-tweet-action {
+    width: 100%;
+    padding: 0.85rem;
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+}
+
+.share-notice {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* ==========================================================================
+   Responsive Queries
+   ========================================================================== */
+@media (max-width: 1024px) {
+    /* Collapse the drawer effect on small screens, overlap instead */
+    body.drawer-open .main-panel {
+        margin-right: 0;
+    }
+    
+    .tweet-drawer {
+        width: 380px;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-panel {
+        padding: 1.5rem;
+    }
+    
+    .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .tweet-drawer {
+        width: 100%;
+    }
+}

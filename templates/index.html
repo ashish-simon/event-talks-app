@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A premium dashboard to browse and share Google Cloud BigQuery release notes and updates.">
+    <title>BigQuery Release Notes Dashboard & X-Share</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Background glow decorations -->
+    <div class="glow-bg">
+        <div class="glow-sphere glow-blue"></div>
+        <div class="glow-sphere glow-purple"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Main Panel -->
+        <main class="main-panel">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-logo">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" xmlns="http://www.w3.org/2005/svg">
+                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17 17H7V15H17V17ZM17 13H7V11H17V13ZM17 9H7V7H17V9Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <h1>BigQuery <span>Releases</span></h1>
+                        <p class="tagline">Stay updated with Google Cloud BigQuery and tweet release updates instantly</p>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <!-- Status indicator -->
+                    <div id="status-badge" class="status-badge status-loading">
+                        <span class="status-dot"></span>
+                        <span id="status-text" class="status-label">Connecting...</span>
+                    </div>
+                    
+                    <!-- Refresh Button -->
+                    <button id="btn-refresh" class="btn btn-refresh" aria-label="Refresh notes">
+                        <svg class="icon-refresh" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                        </svg>
+                        <span class="btn-text">Refresh</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Search and Filter Bar -->
+            <section class="controls-section" aria-label="Filters and Search">
+                <div class="search-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="search-input" placeholder="Search release notes by keywords (e.g., ML, vector, capacity)..." aria-label="Search release notes">
+                    <button id="clear-search" class="clear-search-btn" aria-label="Clear search" style="display: none;">
+                        &times;
+                    </button>
+                </div>
+
+                <div class="filters-container">
+                    <span class="filter-label">Filter by type:</span>
+                    <div class="filter-pills" role="radiogroup" aria-label="Update Type Filters">
+                        <button class="filter-pill active" data-type="all" role="radio" aria-checked="true">
+                            All <span class="pill-count" id="count-all">0</span>
+                        </button>
+                        <button class="filter-pill" data-type="Feature" role="radio" aria-checked="false">
+                            Features <span class="pill-count" id="count-feature">0</span>
+                        </button>
+                        <button class="filter-pill" data-type="Change" role="radio" aria-checked="false">
+                            Changes <span class="pill-count" id="count-change">0</span>
+                        </button>
+                        <button class="filter-pill" data-type="Announcement" role="radio" aria-checked="false">
+                            Announcements <span class="pill-count" id="count-announcement">0</span>
+                        </button>
+                        <button class="filter-pill" data-type="Issue" role="radio" aria-checked="false">
+                            Issues <span class="pill-count" id="count-issue">0</span>
+                        </button>
+                        <button class="filter-pill" data-type="Breaking" role="radio" aria-checked="false">
+                            Breaking <span class="pill-count" id="count-breaking">0</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading View -->
+            <div id="loading-state" class="loading-state">
+                <div class="spinner-large"></div>
+                <p>Loading BigQuery Release Notes...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <div class="empty-icon">📂</div>
+                <h3>No release notes found</h3>
+                <p>Try adjusting your search query or filters.</p>
+            </div>
+
+            <!-- Release Notes Grid -->
+            <section id="notes-grid" class="notes-grid" aria-label="Release Notes List">
+                <!-- Notes will be injected here by Javascript -->
+            </section>
+        </main>
+
+        <!-- Right Side Panel: Tweet Editor (Slide-out drawer) -->
+        <aside id="tweet-drawer" class="tweet-drawer" aria-label="X Sharing Drawer">
+            <div class="drawer-header">
+                <div class="drawer-title-group">
+                    <span class="drawer-subtitle">Social Composer</span>
+                    <h2>Draft Tweet</h2>
+                </div>
+                <button id="btn-close-drawer" class="btn-close" aria-label="Close composer">&times;</button>
+            </div>
+
+            <div class="drawer-content">
+                <!-- Selected Note Context Preview -->
+                <div class="selected-note-card">
+                    <div class="selected-note-header">
+                        <span id="tweet-preview-type" class="badge">FEATURE</span>
+                        <span id="tweet-preview-date" class="selected-note-date">July 01, 2026</span>
+                    </div>
+                    <div id="tweet-preview-text" class="selected-note-body">
+                        Select a release note card using the "Draft Tweet" button to load it here.
+                    </div>
+                </div>
+
+                <!-- Style presets (AI rewrite styling presets) -->
+                <div class="preset-selector-group">
+                    <label class="section-label">Choose Tweet Style Preset:</label>
+                    <div class="style-presets">
+                        <button class="preset-pill active" data-style="insider">
+                            <span>🚀</span> Insider
+                        </button>
+                        <button class="preset-pill" data-style="corporate">
+                            <span>💼</span> Professional
+                        </button>
+                        <button class="preset-pill" data-style="excited">
+                            <span>🔥</span> Hype
+                        </button>
+                        <button class="preset-pill" data-style="minimal">
+                            <span>⚡</span> Minimalist
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tweet Edit Area -->
+                <div class="tweet-textarea-wrapper">
+                    <label for="tweet-textarea" class="section-label">Customize Tweet Draft:</label>
+                    <textarea id="tweet-textarea" placeholder="Draft your tweet content..." maxlength="500"></textarea>
+                    
+                    <div class="tweet-textarea-footer">
+                        <button id="btn-reset-tweet" class="btn-text-link" aria-label="Reset draft text">
+                            Reset to default
+                        </button>
+                        <div id="char-counter" class="char-counter">
+                            <span id="char-used">0</span> / <span id="char-limit">280</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button id="btn-post-twitter" class="btn btn-primary btn-tweet-action">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <!-- Custom SVG for X (formerly Twitter) logo -->
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    <span>Share on X / Twitter</span>
+                </button>
+
+                <p class="share-notice">
+                    This opens X/Twitter web intent in a new tab where you can review, log in (if needed), and post.
+                </p>
+            </div>
+        </aside>
+    </div>
+
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
