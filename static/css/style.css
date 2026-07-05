@@ -1034,3 +1034,29 @@ body.drawer-open .tweet-drawer {
         width: 100%;
     }
 }
+
+/* Copy Card Button Utility Styling */
+.btn-copy-card {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: var(--text-secondary);
+    padding: 0.5rem 0.9rem;
+    font-size: 0.8rem;
+    height: 32px;
+    border-radius: var(--radius-sm);
+}
+
+.btn-copy-card:hover {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.25);
+    color: #a7f3d0;
+    transform: translateY(-1px);
+}
+
+.btn-copy-card.copied {
+    background: rgba(16, 185, 129, 0.18) !important;
+    border-color: rgba(16, 185, 129, 0.45) !important;
+    color: #34d399 !important;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.1);
+}
+

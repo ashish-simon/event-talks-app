@@ -2,12 +2,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // State management
     let releaseNotes = []; // Raw parsed entries from API
     let flatUpdates = [];  // Flattened list of individual updates
+    let filteredUpdates = []; // Currently filtered updates
     let selectedUpdate = null; // Currently selected update for tweeting
     let currentFilter = 'all';
     let searchQuery = '';
     
     // UI Elements
     const btnRefresh = document.getElementById('btn-refresh');
+    const btnExportCsv = document.getElementById('btn-export-csv');
     const statusBadge = document.getElementById('status-badge');
     const statusText = document.getElementById('status-text');
     const searchInput = document.getElementById('search-input');
@@ -93,12 +95,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     btnPostTwitter.addEventListener('click', shareOnTwitter);
+    btnExportCsv.addEventListener('click', exportToCSV);
 
     // Fetch notes from API
     async function fetchNotes(forceRefresh = false) {
         setLoading(true);
         btnRefresh.classList.add('spinning');
         btnRefresh.disabled = true;
+        btnExportCsv.disabled = true;
         
         updateStatus('loading', 'Fetching release notes...');
         
@@ -135,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setLoading(false);
             btnRefresh.classList.remove('spinning');
             btnRefresh.disabled = false;
+            btnExportCsv.disabled = flatUpdates.length === 0;
         }
     }
 
@@ -198,8 +203,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return matchesType && matchesSearch;
         });
 
+        filteredUpdates = filtered;
+        btnExportCsv.disabled = filteredUpdates.length === 0;
         updateFilterCounts();
-        renderCards(filtered);
+        renderCards(filteredUpdates);
     }
 
     // Calculate pill count metadata for the UI
@@ -287,12 +294,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${update.html}
                 </div>
                 <div class="note-actions">
-                    <button class="btn btn-tweet" data-id="${update.id}">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                        </svg>
-                        <span>Draft Tweet</span>
-                    </button>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="btn btn-tweet" data-id="${update.id}">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                            <span>Draft Tweet</span>
+                        </button>
+                        <button class="btn btn-copy-card" data-id="${update.id}">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            <span class="btn-copy-text">Copy</span>
+                        </button>
+                    </div>
                     ${update.link ? `
                         <a href="${update.link}" target="_blank" rel="noopener noreferrer" class="card-link">
                             <span>View Docs</span>
@@ -306,9 +322,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // Attach draft tweet action
+            // Attach actions
             const btnTweet = card.querySelector('.btn-tweet');
             btnTweet.addEventListener('click', () => selectUpdateForTweet(update));
+
+            const btnCopy = card.querySelector('.btn-copy-card');
+            btnCopy.addEventListener('click', () => copyToClipboard(update, btnCopy));
 
             notesGrid.appendChild(card);
         });
@@ -451,5 +470,75 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const url = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}`;
         window.open(url, '_blank', 'noopener,noreferrer,width=550,height=420');
+    }
+
+    // Copy release note to clipboard
+    function copyToClipboard(update, button) {
+        const textToCopy = `[${update.date}] BigQuery ${update.type}:\n${update.text}\n\nRead details: ${update.link || 'https://docs.cloud.google.com/bigquery/docs/release-notes'}`;
+        
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const textSpan = button.querySelector('.btn-copy-text');
+            const originalText = textSpan.textContent;
+            button.classList.add('copied');
+            textSpan.textContent = 'Copied!';
+            
+            setTimeout(() => {
+                button.classList.remove('copied');
+                textSpan.textContent = originalText;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+            alert('Failed to copy to clipboard. Please copy manually.');
+        });
+    }
+
+    // Export currently filtered list to CSV format
+    function exportToCSV() {
+        if (filteredUpdates.length === 0) return;
+
+        const headers = ['Date', 'Type', 'Description', 'Link'];
+        
+        const escapeCSV = (val) => {
+            if (val === null || val === undefined) return '';
+            const str = String(val).replace(/"/g, '""');
+            if (str.includes(',') || str.includes('\n') || str.includes('"')) {
+                return `"${str}"`;
+            }
+            return str;
+        };
+
+        const csvRows = [headers.join(',')];
+
+        filteredUpdates.forEach(update => {
+            const row = [
+                escapeCSV(update.date),
+                escapeCSV(update.type),
+                escapeCSV(update.text),
+                escapeCSV(update.link)
+            ];
+            csvRows.push(row.join(','));
+        });
+
+        const csvString = csvRows.join('\n');
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+
+        let filename = 'bigquery_release_notes';
+        if (currentFilter !== 'all') {
+            filename += `_${currentFilter.toLowerCase()}`;
+        }
+        if (searchQuery) {
+            filename += `_search_${searchQuery.replace(/[^a-z0-9]/gi, '_').toLowerCase()}`;
+        }
+        filename += '.csv';
+
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     }
 });
